@@ -1,5 +1,24 @@
+//  boost/type_traits/type_desc.hpp  -------------------------------------------------//  
+
+//  Copyright Beman Dawes 2010
+
+//  Distributed under the Boost Software License, Version 1.0.
+//  See http://www.boost.org/LICENSE_1_0.txt
+
+#ifndef BOOST_TYPE_TRAITS_TYPE_DESC_HPP
+#define BOOST_TYPE_TRAITS_TYPE_DESC_HPP
+
+#include <boost/config.hpp>
+
 #include <string>
-#include <type_traits>
+#include <boost/type_traits/is_const.hpp>
+#include <boost/type_traits/is_volatile.hpp>
+#include <boost/type_traits/is_pointer.hpp>
+#include <boost/type_traits/is_lvalue_reference.hpp>
+#include <boost/type_traits/is_rvalue_reference.hpp>
+#include <boost/type_traits/remove_pointer.hpp> 
+#include <boost/type_traits/remove_reference.hpp> 
+#include <boost/detail/scoped_enum_emulation.hpp>
 
 /*
   Examples taken from [dcl.ptr]
@@ -11,48 +30,62 @@
     int i;                       // an integer
     int *p;                      // a pointer to integer
     int *const cp = &i;          // a constant pointer to integer
-
 */
 
+namespace boost
+{
+  BOOST_SCOPED_ENUM_DECLARE_BEGIN(description_options)
+  { none, bracket }; 
+  BOOST_SCOPED_ENUM_DECLARE_END(description_options)
+
 template <class T>
-std::string type_desc()
+std::string type_desc(BOOST_SCOPED_ENUM(description_options)
+                        opts = description_options::bracket)
 {
   std::string s;
 
   if (std::is_pointer<T>::value)
   {
   //std::cout << "ptr: ";
-    if (std::is_const<typename std::remove_pointer<T>::type>::value)
+    if (boost::is_const<typename boost::remove_pointer<T>::type>::value)
       s += "const ";
-    if (std::is_volatile<typename std::remove_pointer<T>::type>::value)
+    if (boost::is_volatile<typename boost::remove_pointer<T>::type>::value)
       s += "volatile ";
       
-    s += '<';
-    s += typeid(typename std::remove_pointer<T>::type).name();
-    s += '>';
+    if (opts == description_options::bracket)
+      s += '<';
+    s += typeid(typename boost::remove_pointer<T>::type).name();
+    if (opts == description_options::bracket)
+      s += '>';
     s += "*";
     
-    if (std::is_const<T>::value)
+    if (boost::is_const<T>::value)
       s += " const";
-    if (std::is_volatile<T>::value)
+    if (boost::is_volatile<T>::value)
       s += " volatile";
   }
   else // not a pointer
   {
-    if (std::is_const<typename std::remove_reference<T>::type>::value)
+    if (boost::is_const<typename boost::remove_reference<T>::type>::value)
       s += "const ";
-    if (std::is_volatile<typename std::remove_reference<T>::type>::value)
+    if (boost::is_volatile<typename boost::remove_reference<T>::type>::value)
       s += "volatile ";
 
-    s += '<';
-    s += typeid(typename std::remove_pointer<T>::type).name();
-    s += '>';
+    if (opts == description_options::bracket)
+      s += '<';
+    s += typeid(typename boost::remove_pointer<T>::type).name();
+    if (opts == description_options::bracket)
+      s += '>';
 
-    if (std::is_lvalue_reference<T>::value)
+    if (boost::is_lvalue_reference<T>::value)
       s += "&";
-    if (std::is_rvalue_reference<T>::value)
+    if (boost::is_rvalue_reference<T>::value)
       s += "&&";
   }
  
   return s;
 }
+
+}  // namespace boost
+
+#endif  // include guard

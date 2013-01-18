@@ -1,24 +1,34 @@
 #include <iostream>
 #include <typeinfo>
 #include <string>
-#include "type_desc.hpp"
+#include <boost/type_traits/type_desc.hpp>
+#include <boost/detail/lightweight_main.hpp>
+#include <boost/detail/lightweight_test.hpp>
+
+using boost::type_desc;
 
 //void f(const int& x)
 //{
 //  std::cout << type_desc<decltype(x)>() << std::endl;
 //}
 
-int main()
+int cpp_main(int argc, char* argv[])
 {
-  //std::cout << typeid(int).name() << std::endl;
-  //std::cout << typeid(const int).name() << std::endl;
-  //std::cout << typeid(int&).name() << std::endl;
-  //std::cout << typeid(int*).name() << std::endl;
+/*
+  Examples taken from [dcl.ptr]
 
-  //std::string s;
-  //std::cout << typeid(decltype( s.begin())).name() << std::endl;
+    int i;                       // an integer
+    int *p;                      // a pointer to integer
+    int *const cp = &i;          // a constant pointer to integer
+    const int ci = 10            // a constant integer
+    const int *pc = &ci;         // a pointer to a constant integer
+    const int *const cpc = pc;   // a constant pointer to a constant integer
+    const int **ppc;             // a pointer to a pointer to a constant integer
+*/
 
-  std::cout << type_desc<int>() << std::endl;
+  BOOST_TEST_EQ(type_desc<int>(), "<int>");
+  BOOST_TEST_EQ(type_desc<int*>(), "<int*>");
+
   std::cout << type_desc<const int>() << std::endl;
   std::cout << type_desc<volatile int>() << std::endl;
   std::cout << type_desc<const volatile int>() << std::endl;
@@ -41,5 +51,5 @@ int main()
   std::cout << type_desc<decltype(foo())>() << std::endl;
 
 //  f(5);
-  return 0;
+  return boost::report_errors();
 }
