@@ -3,14 +3,21 @@
 #include <string>
 #include <boost/type_traits/type_desc.hpp>
 #include <boost/detail/lightweight_main.hpp>
+
+#define BOOST_LIGHTWEIGHT_TEST_OSTREAM std::cout
 #include <boost/detail/lightweight_test.hpp>
 
 using boost::type_desc;
+using std::cout;
+using std::endl;
 
 //void f(const int& x)
 //{
 //  std::cout << type_desc<decltype(x)>() << std::endl;
 //}
+
+#define PRINT_TYPEID_NAME(T) cout << #T " : " << typeid(T).name() \
+  << " " << boost::is_const<typename boost::remove_reference<T>::type>::value << endl;
 
 int cpp_main(int argc, char* argv[])
 {
@@ -26,29 +33,73 @@ int cpp_main(int argc, char* argv[])
     const int **ppc;             // a pointer to a pointer to a constant integer
 */
 
-  BOOST_TEST_EQ(type_desc<int>(), "<int>");
-  BOOST_TEST_EQ(type_desc<int*>(), "<int*>");
+  // non-pointer types
 
-  std::cout << type_desc<const int>() << std::endl;
-  std::cout << type_desc<volatile int>() << std::endl;
-  std::cout << type_desc<const volatile int>() << std::endl;
-  std::cout << type_desc<int*>() << std::endl;
-  std::cout << type_desc<int&>() << std::endl;
-  std::cout << type_desc<int&&>() << std::endl;
-  std::cout << type_desc<const int*>() << std::endl;
-  std::cout << type_desc<const int&>() << std::endl;
-  std::cout << type_desc<const volatile int&&>() << std::endl;
-  std::cout << type_desc<int const*>() << std::endl;
-  std::cout << type_desc<int const&>() << std::endl;
-  std::cout << type_desc<int const&&>() << std::endl;
-  std::cout << "----------\n";
-  std::cout << type_desc<int* const>() << std::endl;
-  std::cout << type_desc<const int* const>() << std::endl;
-  std::cout << type_desc<const int**>() << std::endl;
-  std::cout << type_desc<int[5]>() << std::endl;
+  cout << "\nnon-pointer types\n"
+          "=================\n";
+
+  PRINT_TYPEID_NAME(int);
+  BOOST_TEST_EQ(type_desc<int>(), "int");
+
+  PRINT_TYPEID_NAME(const int);
+  BOOST_TEST_EQ(type_desc<const int>(), "const int");
+
+  PRINT_TYPEID_NAME(int const);
+  BOOST_TEST_EQ(type_desc<int const>(), "const int");
+
+  PRINT_TYPEID_NAME(int&);
+  BOOST_TEST_EQ(type_desc<int&>(), "int&");
+
+  PRINT_TYPEID_NAME(const int&);
+  BOOST_TEST_EQ(type_desc<const int&>(), "const int&");
+
+  PRINT_TYPEID_NAME(int const&);
+  BOOST_TEST_EQ(type_desc<int const&>(), "const int&");
+
+  PRINT_TYPEID_NAME(int&&);
+  BOOST_TEST_EQ(type_desc<int&&>(), "int&&");
+
+  PRINT_TYPEID_NAME(const int&&);
+  BOOST_TEST_EQ(type_desc<const int&&>(), "const int&&");
+
+  PRINT_TYPEID_NAME(int const&&);
+  BOOST_TEST_EQ(type_desc<int const&&>(), "const int&&");
+  
+// pointer types
+
+  cout << "\npointer types\n"
+          "=============\n";
+
+  PRINT_TYPEID_NAME(int*);
+  BOOST_TEST_EQ(type_desc<int*>(), "int*");
+
+  PRINT_TYPEID_NAME(const int*);
+  BOOST_TEST_EQ(type_desc<const int*>(), "const int*");
+
+  PRINT_TYPEID_NAME(int const*);
+  BOOST_TEST_EQ(type_desc<int const*>(), "const int*");
+
+  PRINT_TYPEID_NAME(const int* const);
+  BOOST_TEST_EQ(type_desc<const int* const>(), "const int* const");
+
+  PRINT_TYPEID_NAME(int const* const);
+  BOOST_TEST_EQ(type_desc<int const* const>(), "const int* const");
+
+  PRINT_TYPEID_NAME(const int **);
+  BOOST_TEST_EQ(type_desc<const int **>(), "const int**");
+
+  PRINT_TYPEID_NAME(int const**);
+  BOOST_TEST_EQ(type_desc<int const**>(), "const int**");
+
+  PRINT_TYPEID_NAME(int const** const);
+  BOOST_TEST_EQ(type_desc<int const** const>(), "const int** const");
+
+  PRINT_TYPEID_NAME(int const* const * const);
+  BOOST_TEST_EQ(type_desc<int const* const * const>(), "const int* const* const");
+
 
   const int&& foo();
-  std::cout << type_desc<decltype(foo())>() << std::endl;
+  cout << type_desc<decltype(foo())>() << endl;
 
 //  f(5);
   return boost::report_errors();
