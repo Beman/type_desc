@@ -1,3 +1,10 @@
+//  type_desc_test.cpp  ----------------------------------------------------------------//  
+
+//  Copyright Beman Dawes 2013
+
+//  Distributed under the Boost Software License, Version 1.0.
+//  See http://www.boost.org/LICENSE_1_0.txt
+
 #include <iostream>
 #include <typeinfo>
 #include <string>
@@ -10,11 +17,6 @@
 using boost::type_desc;
 using std::cout;
 using std::endl;
-
-//void f(const int& x)
-//{
-//  std::cout << type_desc<decltype(x)>() << std::endl;
-//}
 
 #define PRINT_TYPEID_NAME(T) cout << #T " : " << typeid(T).name() \
   << " " << boost::is_const<typename boost::remove_reference<T>::type>::value << endl;

@@ -1,9 +1,21 @@
-//  boost/type_traits/type_desc.hpp  -------------------------------------------------//  
+//  boost/type_traits/type_desc.hpp  ---------------------------------------------------//  
 
-//  Copyright Beman Dawes 2010
+//  Copyright Beman Dawes 2013
 
 //  Distributed under the Boost Software License, Version 1.0.
 //  See http://www.boost.org/LICENSE_1_0.txt
+
+//--------------------------------------------------------------------------------------//
+//
+//  Given a type, T, return a string describing the type.
+//
+//  Currently tuned for Microsoft Visual C++
+//
+//  TODO:
+//
+//  * Add tuning for typeid().name() from other compilers
+//
+//--------------------------------------------------------------------------------------//
 
 #ifndef BOOST_TYPE_TRAITS_TYPE_DESC_HPP
 #define BOOST_TYPE_TRAITS_TYPE_DESC_HPP
@@ -52,12 +64,6 @@ std::string type_desc(BOOST_SCOPED_ENUM(description_options)
 
   if (std::is_pointer<T>::value)
   {
-  //std::cout << "ptr: ";
-    //if (boost::is_const<typename boost::remove_pointer<T>::type>::value)
-    //  s += "const ";
-    //if (boost::is_volatile<typename boost::remove_pointer<T>::type>::value)
-    //  s += "volatile ";
-      
     if (opts == description_options::bracket_typeid)
       s += '<';
     BOOST_ASSERT(!type_desc<typename boost::remove_pointer<T>::type>().empty());
