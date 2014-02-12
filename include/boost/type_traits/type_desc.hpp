@@ -37,6 +37,12 @@
 # include <cxxabi.h>
 #endif
 
+#if defined(BOOST_GCC)
+# define BOOST_TYPEID(T) abi::__cxa_demangle(typeid(T).name(), NULL, NULL, NULL)
+#else
+# define BOOST_TYPEID(T) typeid(T).name()
+#endif
+
 /*
   Examples taken from [dcl.ptr]
 
@@ -92,11 +98,7 @@ std::string type_desc(BOOST_SCOPED_ENUM(description_options)
       s += '<';
 //    s += typeid(typename boost::remove_pointer<T>::type).name();
 //    s += type_name<T>();
-#if defined(BOOST_GCC)
-    s += abi::__cxa_demangle(typeid(T).name(), NULL, NULL, NULL);
-#else
-    s += typeid(T).name();
-#endif
+    s += BOOST_TYPEID(T);
     if (opts == description_options::bracket_typeid)
       s += '>';
 
