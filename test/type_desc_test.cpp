@@ -18,7 +18,7 @@ using boost::type_desc;
 using std::cout;
 using std::endl;
 
-#define PRINT_TYPEID_NAME(T) cout << #T " : " << typeid(T).name() \
+# define PRINT_TYPEID_NAME(T) cout << #T " : " << BOOST_TYPEID(T) \
   << " " << boost::is_const<typename boost::remove_reference<T>::type>::value << endl;
 
 int cpp_main(int argc, char* argv[])
@@ -66,7 +66,7 @@ int cpp_main(int argc, char* argv[])
 
   PRINT_TYPEID_NAME(int const&&);
   BOOST_TEST_EQ(type_desc<int const&&>(), "const int&&");
-  
+
 // pointer types
 
   cout << "\npointer types\n"
