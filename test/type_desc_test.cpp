@@ -18,8 +18,13 @@ using boost::type_desc;
 using std::cout;
 using std::endl;
 
-#define PRINT_TYPEID_NAME(T) cout << #T " : " << typeid(T).name() \
+#if defined(BOOST_GCC)
+# define PRINT_TYPEID_NAME(T) cout << #T " : " << abi::__cxa_demangle(typeid(T).name(), NULL, NULL, NULL) \
   << " " << boost::is_const<typename boost::remove_reference<T>::type>::value << endl;
+#else
+# define PRINT_TYPEID_NAME(T) cout << #T " : " << typeid(T).name() \
+  << " " << boost::is_const<typename boost::remove_reference<T>::type>::value << endl;
+#endif
 
 int cpp_main(int argc, char* argv[])
 {
@@ -66,7 +71,7 @@ int cpp_main(int argc, char* argv[])
 
   PRINT_TYPEID_NAME(int const&&);
   BOOST_TEST_EQ(type_desc<int const&&>(), "const int&&");
-  
+
 // pointer types
 
   cout << "\npointer types\n"
